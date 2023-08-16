@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insult Generator Demo</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
+
+
+    <script src="https://unpkg.com/htmx.org@1.9.2"
+        integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
+        crossorigin="anonymous"></script>
+
+
+</head>
+
+<body class="container">
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive"
+            aria-atomic="true" id="liveToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Copied that to your clipboard!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 g-4">
+
+        <div class="col-10">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h1 class="display-6">Insult Generator</h1>
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote" id="insultbody">
+                        {{ block "insult-element" .}}
+                        <p id="insult-text">
+                            {{ .InsultText }}
+                        </p>
+                        {{end}}
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <form hx-post="/get/" hx-target="#insultbody" hx-swap="innerHTML">
+
+                    <div class="btn-group" role="group" aria-label="Basic example">
+
+                        <button type="submit" class="btn btn-primary active" id="submitbtn">
+                            <h4>Generate</h4>
+                            <span class="htmx-indicator" role="status" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-primary" id="copyclip">
+                            <h4>Copy to Clipboard</h4>
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+</body>
+
+<script>
+    document.getElementById("copyclip").onclick = function () {
+        // Get the text field
+        var copyText = document.getElementById("insult-text");
+        // // Copy the text inside the text field
+        navigator.clipboard.writeText(copyText.innerHTML.trim());
+
+        var toastElList = [].slice.call(document.querySelectorAll('#liveToast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
+        toastList.forEach(toast => toast.show())
+
+    }
+</script>
+
+
+</html>
